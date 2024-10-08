@@ -1,0 +1,200 @@
+Socrates
+Plato
+Aristotle
+Confucius
+Immanuel Kant
+René Descartes
+John Locke
+David Hume
+Georg Wilhelm Friedrich Hegel
+Thomas Aquinas
+Jean-Paul Sartre
+Friedrich Nietzsche
+Karl Marx
+Bertrand Russell
+Ludwig Wittgenstein
+Baruch Spinoza
+Jean-Jacques Rousseau
+John Stuart Mill
+Albert Camus
+Michel Foucault
+Simone de Beauvoir
+Gottfried Wilhelm Leibniz
+Arthur Schopenhauer
+Hannah Arendt
+Epicurus
+Thales of Miletus
+Heraclitus
+Democritus
+Pythagoras
+Zeno of Elea
+Parmenides
+Anaxagoras
+Anaximander
+Epictetus
+Marcus Aurelius
+Seneca
+Diogenes
+Plotinus
+Al-Farabi
+Avicenna
+Averroes
+Thomas Hobbes
+Francis Bacon
+Søren Kierkegaard
+Blaise Pascal
+John Rawls
+G.E. Moore
+Alasdair MacIntyre
+Willard Van Orman Quine
+Paul Ricoeur
+Alfred North Whitehead
+Ralph Waldo Emerson
+Mary Wollstonecraft
+Hypatia
+Gilles Deleuze
+jfarnos-
+Jacques Derrida
+Slavoj Zizek
+Judith Butler
+G.W.F. Hegel
+Alvin Plantinga
+Leo Strauss
+Charles Sanders Peirce
+Henri Bergson
+Richard Rorty
+Augustine of Hippo
+John Dewey
+William James
+Michel de Montaigne
+Niccolò Machiavelli
+Mozi
+Derrick Bell
+Wang Yangming
+Xunzi
+Mencius
+Chrysippus
+Cleanthes
+Boethius
+Ibn Khaldun
+Maimonides
+Gilbert Ryle
+Erich Fromm
+Isaiah Berlin
+Charles Taylor
+Hans-Georg Gadamer
+Emmanuel Levinas
+Claude Lévi-Strauss
+Max Horkheimer
+Theodor W. Adorno
+Herbert Marcuse
+Antonio Gramsci
+Hans Jonas
+Jacques Lacan
+Max Scheler
+Pico della Mirandola
+G.E.M. Anscombe
+Friedrich Hayek
+Ayn Rand
+Leo Tolstoy
+George Santayana
+Hermann Cohen
+Ernst Cassirer
+Rudolf Carnap
+Karl Popper
+Jürgen Habermas
+Maurice Merleau-Ponty
+Henri Lefebvre
+Pierre Bourdieu
+Giovanni Gentile
+Oswald Spengler
+Simone Weil
+Ernst Bloch
+José Ortega y Gasset
+Wilhelm Dilthey
+John Stuart Mill
+William of Ockham
+S.M. Juan Carlos
+R.G. Collingwood
+Karl Jaspers
+Nicolai Hartmann
+Emil Cioran
+Jean Baudrillard
+J.L. Austin
+Alfred Ayer
+Michel Henry
+Alain Badiou
+Manuel DeLanda
+Paul Tillich
+Wilfrid Sellars
+Hannah Pitkin
+Walter Benjamin
+Frantz Fanon
+Iris Murdoch
+Cornel West
+A.J. Ayer
+Jiddu Krishnamurti
+B.R. Ambedkar
+Savitri Devi
+Abū al-Walīd ibn Rushd
+Ibn Tufail
+Avicenna
+Averroes
+Al-Kindi
+Duns Scotus
+Giordano Bruno
+David Ricardo
+Adam Smith
+Émile Durkheim
+George Berkeley
+Denis Diderot
+John Stuart Mill
+Ibn Sina
+F.H. Bradley
+Alexander Bain
+Giuseppe Mazzini
+J.B. Bury
+William Godwin
+Johan Galtung
+Erich Fromm
+Jürgen Habermas
+Martha Nussbaum
+Philippa Foot
+A.C. Grayling
+Noam Chomsky
+Peter Singer
+Robert Nozick
+Edward Said
+Jacques Rancière
+Homi K. Bhabha
+Judith Butler
+Angela Davis
+Amartya Sen
+Slavoj Žižek
+Walter Kaufmann
+Alan Watts
+Tariq Ramadan
+Daniel Dennett
+Michel Onfray
+Cornel West
+Roger Scruton
+Samuel Alexander
+Kwame Anthony Appiah
+Bernard Williams
+Elizabeth Anscombe
+Peter Sloterdijk
+Richard Swinburne
+Thomas Nagel
+Nagarjuna
+Dogen
+Shinran
+Thich Nhat Hanh
+Rene Girard
+Allan Bloom
+Jonathan Haidt
+Mencius Moldbug
+Gilles Deleuze
+Quine
+Julian Jaynes
+Foucault
+Camus
