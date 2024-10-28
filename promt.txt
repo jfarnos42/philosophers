@@ -1,0 +1,365 @@
+General Requirements
+
+Each of the three programs should adhere to the following fundamental rules:
+
+    Environment Setup:
+        Code exclusively in C following the Norm of 42School.
+        Any error in memory management, crashes, undefined behavior, or norm violations will lead to a failed project.
+        Use only authorized functions specified in each program version.
+        Compile with a Makefile that includes standard rules (all, clean, fclean, re).
+
+    Simulation Overview:
+        Philosophers (threads or processes) are seated in a circular arrangement around a bowl of spaghetti.
+        Each philosopher must perform three activities in sequence: eating, sleeping, and thinking.
+        Dining Rules:
+            Each philosopher must pick up two forks to eat and must release them before sleeping.
+            Philosophers don’t communicate or know each other’s states.
+            A philosopher will "die" if it doesn't start eating within a specified time_to_die after its last meal.
+        Output Format: Log changes to each philosopher's state in the form:
+
+        php
+
+        timestamp_in_ms X <action>
+
+        where <action> is one of has taken a fork, is eating, is sleeping, is thinking, or died.
+
+    Command-Line Arguments:
+        Each program should accept the following parameters:
+            number_of_philosophers: Number of philosophers (and forks).
+            time_to_die: Maximum milliseconds a philosopher can go without eating.
+            time_to_eat: Time (ms) each philosopher takes to eat.
+            time_to_sleep: Time (ms) each philosopher takes to sleep.
+            [number_of_times_each_philosopher_must_eat] (optional): If specified, the simulation ends when each philosopher has eaten this number of times.
+
+Program 1: philo_one - Threads and Mutexes
+
+    Set Up Forks and Mutexes:
+        Create a mutex for each fork to prevent concurrent access.
+        Philosophers use the fork to their left and right (mutex-protected).
+
+    Threading Model:
+        Each philosopher is represented by a thread.
+        Use pthread_mutex_lock and pthread_mutex_unlock to manage access to forks.
+
+    Philosopher Routine:
+        Each philosopher checks if both forks (left and right) are available to start eating.
+        Release forks after eating, then sleep, and think.
+        Implement a death-checking mechanism where each thread monitors its time_to_die.
+
+Program 2: philo_two - Threads and Semaphores
+
+    Set Up Forks with Semaphores:
+        Use a semaphore to represent the total number of available forks.
+        Philosophers will attempt to acquire two fork resources from the shared pool.
+
+    Threading Model:
+        Each philosopher is represented by a thread.
+        Use sem_wait to acquire a fork and sem_post to release it.
+
+    Philosopher Routine:
+        A philosopher must acquire two semaphore units before eating, blocking if fewer than two are available.
+        Release two semaphore units after eating, then sleep and think.
+        Maintain an independent death-checking routine for each philosopher.
+
+Program 3: philo_three - Processes and Semaphores
+
+    Fork Management with Semaphores:
+        Set up a semaphore that represents the available fork count.
+        The program uses sem_wait to decrement and sem_post to increment the fork count.
+
+    Process Model:
+        Each philosopher is a separate process.
+        The main process monitors child processes and terminates if any philosopher dies or all reach the specified eating count.
+
+    Philosopher Routine:
+        Each philosopher waits to acquire two semaphore units (forks) to eat, releases them afterward, and proceeds to sleep and think.
+        Use fork to create separate processes and waitpid in the main process to monitor for death.
+
+    Simulation Termination:
+        The main process tracks each philosopher's state.
+        The simulation ends if a philosopher dies or if all philosophers complete their required meals.
+
+
+Souce Code:
+
+Philo.h
+
+#ifndef PHILO_H
+# define PHILO_H
+
+# include "Libft/libft.h"
+# include "ft_printf/ft_printf.h"
+# include <pthread.h>
+
+# define TRUE 1
+# define FALSE 0
+
+typedef struct s_routine_data
+{
+	int				n_philos;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				number_of_times;
+}					t_routine_data;
+
+typedef enum s_actions
+{
+	THINKING,
+	EATING,
+	SLEEPING,
+	DEAD
+}					t_actions;
+
+typedef struct s_toggle_mutex
+{
+	pthread_mutex_t	print;
+	pthread_mutex_t pepsi;
+	pthread_mutex_t	l_fork;
+	pthread_mutex_t	r_fork;
+}					t_toggle_mutex;
+
+typedef struct s_philosopher
+{
+	int				id;
+	// char			*name;
+	t_actions		*current_action;
+	t_routine_data	routine;
+}					t_philosopher;
+
+typedef struct s_table
+{
+	t_philosopher	philosopher;
+	t_toggle_mutex	*mutex;
+	struct s_table	*next;
+}					t_table;
+
+/*### FUNCTIONS ###*/
+
+/*	INITS	*/
+int					init_dinner(t_table **table, t_routine_data routine);
+t_routine_data		init_routine_data(char **argv);
+void    init_fork_mutex(t_table **table);
+
+
+/*	PARSER	*/
+int					parser(int argc, char **argv);
+int					check_for_digit(char *argv);
+
+/*	PHILO	*/
+void    philo_sleep(t_table *table);
+void	philo_eat(t_table *table);
+void	philo_think(t_table *table);
+
+/*	THREADS	*/
+int					init_threads(t_table *table);
+
+/*	UTILS	*/
+t_table				*philo_lstnew(t_routine_data routine, int id);
+void				philo_lstadd_back(t_table **table, t_table *chair);
+t_table				*philo_lstlast(t_table *lst);
+
+#endif
+
+main.C
+
+int    init_dinner(t_table **table, t_routine_data routine)
+{
+    int i;
+    t_table *chair;
+
+    i = 0;
+    while (i <= routine.n_philos)
+    {
+        chair = philo_lstnew(routine, i);
+        if (!chair)
+            return (FALSE);
+        philo_lstadd_back(table, chair);
+        i++;
+    }
+    return (TRUE);
+}
+
+int	parser(int argc, char **argv)
+{
+	int i;
+	
+	if ((argc < 5 || argc > 6) || !argv)
+		return (FALSE);
+	i = 1;
+	while (argv[i])
+	{
+		if (!check_for_digit(argv[i]))
+            return (FALSE);
+		i++;
+	}
+	return (TRUE);
+}
+
+int check_for_digit(char *argv)
+{
+    int i;
+
+    i = 0;
+    while(argv[i])
+    {
+        if (argv[i] < '0' && argv[i] > '9')
+            return (FALSE);
+        i++;
+    }
+    return(TRUE);
+}
+
+struct_utils:
+
+#include "includes/philo.h"
+
+t_table	*philo_lstnew(t_routine_data routine, int id)
+{
+	t_table	*chair;
+
+	chair = (t_table *)malloc(sizeof(t_table) * 1);
+	if (!chair)
+		return (NULL);
+	chair->philosopher.routine = routine;
+	chair->philosopher.id = id;
+	//chair->philosopher.name = philo_baptizer();
+	chair->next = NULL;
+	return (chair);
+}
+
+void	philo_lstadd_back(t_table **table, t_table *chair)
+{
+	t_table	*aux_table;
+
+	if (chair)
+	{
+		aux_table = philo_lstlast(*table);
+		if (!aux_table)
+			*table = chair;
+		else
+			aux_table->next = chair;
+	}
+}
+
+t_table	*philo_lstlast(t_table *lst)
+{
+	if (!lst)
+		return (NULL);
+	while (lst->next != NULL)
+		lst = lst->next;
+	return (lst);
+}
+
+void print_table(t_table *table)
+{
+    if (table)
+    {
+        while(table->next)
+        {
+            printf("Philo ID: %i\n", table->philosopher.id);
+            printf("    time_to_die: %i\n", table->philosopher.routine.time_to_die);
+            printf("    time_to_eat: %i\n", table->philosopher.routine.time_to_eat);
+            printf("    time_to_sleep: %i\n", table->philosopher.routine.time_to_sleep);
+            table = table->next;
+        }
+    }
+}
+
+threads.C
+
+#include "includes/philo.h"
+
+void    init_fork_mutex(t_table **table)
+{
+    t_table *aux;
+    
+    aux = *table;
+    while ((*table)->next)
+    {
+        pthread_mutex_init(&(*table)->mutex->r_fork, NULL);
+        (*table)->next->mutex->l_fork = (*table)->mutex->r_fork;
+        (*table) = (*table)->next;
+    }
+    //printf("donde estoy ==) %d\n", (aux)->philosopher.id);    aux->mutex->l_fork = (*table)->mutex->r_fork;
+    *table = aux;
+}
+
+void *thread_routine(void *args)
+{
+    t_table *table;
+
+    table = (t_table *)args;
+    philo_eat(table);
+    sleep(5);
+    philo_sleep(table);
+    sleep(5);
+    philo_think(table);
+    return (NULL);
+}
+
+int	init_threads(t_table *table)
+{
+	pthread_t	*threads_id;
+	int			i;
+
+	i = 0;
+	threads_id = (pthread_t *)malloc(sizeof(pthread_t)
+			* table->philosopher.routine.n_philos);
+	if (!threads_id | !table) 
+		return (FALSE);
+	else
+	{
+		while (table->next)
+		{
+			pthread_create(&threads_id[i++], NULL, thread_routine, table);
+			table = table->next;
+            //printf("ID del hilo: %lu\n", (unsigned long)threads_id[i-1]);
+		}
+        //wait_for_threads();
+        
+	}
+	return (TRUE);
+}
+
+actions.c
+
+#include "includes/philo.h"
+
+void    philo_sleep(t_table *table)
+{
+    //table->philosopher.current_action = SLEEPING;
+    sleep(table->philosopher.routine.time_to_sleep);
+}
+
+void    philo_eat(t_table *table)
+{
+    //table->philosopher.current_action = EATING;
+    sleep(table->philosopher.routine.time_to_eat);
+}
+
+void    philo_think(t_table *table)
+{
+    (void)table;
+    //table->philosopher.current_action = THINKING;
+    /*  DE MOMENTO NO HASE NA   */
+}
+
+routines.C
+
+#include "includes/philo.h"
+
+t_routine_data	init_routine_data(char **argv)
+{
+	t_routine_data	routines;
+
+	routines.n_philos = ft_atoi(argv[1]);
+	routines.time_to_die = ft_atoi(argv[2]);
+	routines.time_to_eat = ft_atoi(argv[3]);
+	routines.time_to_sleep = ft_atoi(argv[4]);
+	if (argv[5])
+		routines.number_of_times = ft_atoi(argv[5]);
+	else
+		routines.number_of_times = 0;
+	return (routines);
+}

@@ -1,26 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*   baptizer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jfarnos- <jfarnos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 23:22:23 by jfarnos-          #+#    #+#             */
-/*   Updated: 2024/10/09 01:24:57 by jfarnos-         ###   ########.fr       */
+/*   Created: 2024/10/26 14:33:13 by jfarnos-          #+#    #+#             */
+/*   Updated: 2024/10/26 14:34:50 by jfarnos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/philo.h"
 
-int check_for_digit(char *argv)
+char *philo_baptizer(int fd, t_table **table)
 {
-    int i;
-
-    i = -1;
-    while(argv[++i])
-    {
-        if (argv[i] < '0' && argv[i] > '9')
-            return (FALSE);
-    }
-    return(TRUE);
+    /*  asigna nombre a los Filosofofos */
+    return (NULL);
 }

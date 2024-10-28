@@ -6,33 +6,42 @@
 /*   By: jfarnos- <jfarnos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 23:03:11 by jfarnos-          #+#    #+#             */
-/*   Updated: 2024/10/09 01:04:29 by jfarnos-         ###   ########.fr       */
+/*   Updated: 2024/10/26 18:54:00 by jfarnos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/philo.h"
 
-t_table *philo_lstnew(t_routine_data *routine, int id)
+void	philo_clear_table(t_table **table)
 {
-    t_table *chair;
+	t_table *trash;
 
-    chair = (t_table *)malloc(sizeof(t_table) * 1);
-    if (!chair)
-        return (NULL);
-    chair->philosopher->routine = routine;
-    chair->philosopher->id = id;
-//  chair->philosopher->fork = FALSE;
-    chair->next = NULL;
-    return (chair);      
+	trash = philo_lstlast(*table);
+	free()
+	
 }
 
-void philo_lstadd_back(t_table **table, t_table *chair)
+t_table	*philo_lstnew(t_routine_data routine, int id)
 {
-	t_table *aux_table;
+	t_table	*chair;
+
+	chair = (t_table *)malloc(sizeof(t_table) * 1);
+	if (!chair)
+		return (NULL);
+	chair->philosopher.routine = routine;
+	chair->philosopher.id = id;
+	//chair->philosopher.name = philo_baptizer();
+	chair->next = NULL;
+	return (chair);
+}
+
+void	philo_lstadd_back(t_table **table, t_table *chair)
+{
+	t_table	*aux_table;
 
 	if (chair)
 	{
-		aux_table = ft_lstlast(table);
+		aux_table = philo_lstlast(*table);
 		if (!aux_table)
 			*table = chair;
 		else
@@ -47,4 +56,19 @@ t_table	*philo_lstlast(t_table *lst)
 	while (lst->next != NULL)
 		lst = lst->next;
 	return (lst);
+}
+
+void print_table(t_table *table)
+{
+    if (table)
+    {
+        while(table->next)
+        {
+            printf("Philo ID: %i\n", table->philosopher.id);
+            printf("    time_to_die: %i\n", table->philosopher.routine.time_to_die);
+            printf("    time_to_eat: %i\n", table->philosopher.routine.time_to_eat);
+            printf("    time_to_sleep: %i\n", table->philosopher.routine.time_to_sleep);
+            table = table->next;
+        }
+    }
 }
