@@ -6,7 +6,7 @@
 /*   By: jfarnos- <jfarnos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 19:31:46 by jfarnos-          #+#    #+#             */
-/*   Updated: 2024/10/30 05:19:27 by jfarnos-         ###   ########.fr       */
+/*   Updated: 2024/10/30 07:22:35 by jfarnos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int check_for_digit(char *argv)
     i = 0;
     while(argv[i])
     {
-        if (argv[i] < '0' || argv[i] > '9')
+        if (argv[i] == '-' || (argv[i] < '0' || argv[i] > '9'))
             return (FALSE);
         i++;
     }
@@ -30,7 +30,7 @@ int	parser(int argc, char **argv)
 {
 	int i;
 	
-	if ((argc < 5 || argc > 6) || !argv)
+	if ((argc < 5 || argc > 6) || (!argv || argv[1] == 0))
 		return (FALSE);
 	i = 1;
 	while (argv[i])

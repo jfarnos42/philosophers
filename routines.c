@@ -6,7 +6,7 @@
 /*   By: jfarnos- <jfarnos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 23:04:12 by jfarnos-          #+#    #+#             */
-/*   Updated: 2024/10/26 14:43:26 by jfarnos-         ###   ########.fr       */
+/*   Updated: 2024/10/30 08:50:34 by jfarnos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ t_routine_data	init_routine_data(char **argv)
 {
 	t_routine_data	routines;
 
+	if (argv[1] == 0 || argv[2] == 0 || argv[3] == 0 || argv[4] == 0)
+		exit(EXIT_FAILURE);
 	routines.n_philos = ft_atoi(argv[1]);
 	routines.time_to_die = ft_atoi(argv[2]);
 	routines.time_to_eat = ft_atoi(argv[3]);

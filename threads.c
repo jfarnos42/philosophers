@@ -6,7 +6,7 @@
 /*   By: jfarnos- <jfarnos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 21:53:53 by jfarnos-          #+#    #+#             */
-/*   Updated: 2024/10/30 05:37:03 by jfarnos-         ###   ########.fr       */
+/*   Updated: 2024/10/30 07:47:57 by jfarnos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,13 @@ void	thread_join(pthread_t *threads_id, int n_philos)
 	int	i;
 
 	i = 0;
-	if (!threads_id) // Check if threads_id is NULL at the beginning
-	{
-		printf("Error: threads_id is NULL\n");
+	if (!threads_id)
 		return ;
-	}
-	while (i < n_philos) // Loop until all philosopher threads are joined
+	while (i < n_philos)
 	{
-		printf("Joining thread %i\n", i);
+		printf("%i\n", i);
 		if (pthread_join(threads_id[i], NULL) != 0)
-			// Check return value of pthread_join
-		{
-			printf("Error: failed to join thread %i\n", i);
-			return ; // Exit if there's an error
-		}
+			return ;
 		i++;
 	}
 }
@@ -38,20 +31,20 @@ void	thread_join(pthread_t *threads_id, int n_philos)
 void	*thread_routine(void *args)
 {
 	t_table	*table;
-	long	the_last_supper;
+	long	last_supper;
 
 	table = (t_table *)args;
-	the_last_supper = get_current_time();
+	last_supper = get_current_time();
 	while (TRUE)
 	{
         pthread_mutex_lock(&(table->mutex.l_fork));
         pthread_mutex_lock(&(table->mutex.r_fork));
 
 		philo_eat(table);
-		the_last_supper = get_current_time();
+		last_supper = get_current_time();
 		pthread_mutex_unlock(&(table->mutex.l_fork));
 		pthread_mutex_unlock(&(table->mutex.r_fork));
-		if (is_philo_pepsi(table, the_last_supper))
+		if (is_philo_pepsi(table, last_supper))
 			break ;
 		philo_sleep(table);
 		philo_think(table);

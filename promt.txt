@@ -82,14 +82,14 @@ Program 3: philo_three - Processes and Semaphores
 
 Souce Code:
 
-Philo.h
-
+philo.h
 #ifndef PHILO_H
 # define PHILO_H
 
 # include "Libft/libft.h"
 # include "ft_printf/ft_printf.h"
 # include <pthread.h>
+# include <sys/time.h>
 
 # define TRUE 1
 # define FALSE 0
@@ -114,7 +114,7 @@ typedef enum s_actions
 typedef struct s_toggle_mutex
 {
 	pthread_mutex_t	print;
-	pthread_mutex_t pepsi;
+	pthread_mutex_t	pepsi;
 	pthread_mutex_t	l_fork;
 	pthread_mutex_t	r_fork;
 }					t_toggle_mutex;
@@ -122,6 +122,7 @@ typedef struct s_toggle_mutex
 typedef struct s_philosopher
 {
 	int				id;
+	long			last_supper;
 	// char			*name;
 	t_actions		*current_action;
 	t_routine_data	routine;
@@ -139,73 +140,75 @@ typedef struct s_table
 /*	INITS	*/
 int					init_dinner(t_table **table, t_routine_data routine);
 t_routine_data		init_routine_data(char **argv);
-void    init_fork_mutex(t_table **table);
-
+void				init_fork_mutex(t_table **table);
 
 /*	PARSER	*/
 int					parser(int argc, char **argv);
 int					check_for_digit(char *argv);
 
 /*	PHILO	*/
-void    philo_sleep(t_table *table);
-void	philo_eat(t_table *table);
-void	philo_think(t_table *table);
+void				philo_sleep(t_table *table);
+void				philo_eat(t_table *table);
+void				philo_think(t_table *table);
 
 /*	THREADS	*/
-pthread_t	*init_threads(t_table *table);
-void    thread_join(pthread_t *threads_id, int n_philos);
+pthread_t			*init_threads(t_table *table);
+void				thread_join(pthread_t *threads_id, int n_philos);
 
 /*	UTILS	*/
+int					is_philo_pepsi(t_table *table, long the_last_supper);
+long				get_current_time(void);
+void				philo_free_table(t_table **table);
 t_table				*philo_lstnew(t_routine_data routine, int id);
 void				philo_lstadd_back(t_table **table, t_table *chair);
 t_table				*philo_lstlast(t_table *lst);
-void print_table(t_table *table);
+void				print_table(t_table *table);
 
 #endif
 
 main.C
-
 #include "includes/philo.h"
 
-int    init_dinner(t_table **table, t_routine_data routine)
+int	init_dinner(t_table **table, t_routine_data routine)
 {
-    int i;
-    t_table *chair;
+	int		i;
+	t_table	*chair;
 
-    i = 0;
-    while (i <= routine.n_philos)
-    {
-        chair = philo_lstnew(routine, i);
-        if (!chair)
-            return (FALSE);
-        philo_lstadd_back(table, chair);
-        i++;
-    }
-    return (TRUE);
+	i = 0;
+	while (i <= routine.n_philos)
+	{
+		chair = philo_lstnew(routine, i);
+		if (!chair)
+			return (FALSE);
+		philo_lstadd_back(table, chair);
+		i++;
+	}
+	return (TRUE);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-    t_table *table;
-    t_routine_data routine;
-    pthread_t *threads_id;
+	t_table			*table;
+	t_routine_data	routine;
+	pthread_t		*threads_id;
 
-    if (!parser(argc, argv))
-        return (FALSE);
-    routine = init_routine_data(argv);
-    if (!init_dinner(&table, routine))
-        return (FALSE);
-    print_table(table);
-    init_fork_mutex(&table);
-    threads_id = init_threads(table);
-    if (!threads_id)
-        return (FALSE);
-    thread_join(threads_id, table->philosopher.routine.n_philos);
-    free(threads_id);
-    return (TRUE);
+	if (!parser(argc, argv))
+		return (FALSE);
+	routine = init_routine_data(argv);
+	if (!init_dinner(&table, routine))
+		return (FALSE);
+	// print_table(table);
+	init_fork_mutex(&table);
+	threads_id = init_threads(table);
+	if (!threads_id)
+		return (FALSE);
+	thread_join(threads_id, table->philosopher.routine.n_philos);
+	free(threads_id);
+	philo_free_table(&table);
+	return (TRUE);
 }
+
 parser.C
-
 #include "includes/philo.h"
 
 int check_for_digit(char *argv)
@@ -215,7 +218,7 @@ int check_for_digit(char *argv)
     i = 0;
     while(argv[i])
     {
-        if (argv[i] < '0' && argv[i] > '9')
+        if (argv[i] < '0' || argv[i] > '9')
             return (FALSE);
         i++;
     }
@@ -238,7 +241,23 @@ int	parser(int argc, char **argv)
 	return (TRUE);
 }
 
-struct_utils.c
+
+struct_utils.C
+#include "includes/philo.h"
+
+void philo_free_table(t_table **table)
+{
+    t_table *temp;
+    
+    while (*table)
+    {
+        temp = (*table)->next;
+        pthread_mutex_destroy(&(*table)->mutex.r_fork);
+        free(*table);
+        *table = temp;
+    }
+}
+
 
 t_table	*philo_lstnew(t_routine_data routine, int id)
 {
@@ -293,9 +312,6 @@ void print_table(t_table *table)
 }
 
 routines.C
-
-#include "includes/philo.h"
-
 t_routine_data	init_routine_data(char **argv)
 {
 	t_routine_data	routines;
@@ -311,7 +327,8 @@ t_routine_data	init_routine_data(char **argv)
 	return (routines);
 }
 
-threads.c
+threads.C
+#include "includes/philo.h"
 
 void	thread_join(pthread_t *threads_id, int n_philos)
 {
@@ -336,22 +353,6 @@ void	thread_join(pthread_t *threads_id, int n_philos)
 	}
 }
 
-void	init_fork_mutex(t_table **table)
-{
-	t_table	*head;
-
-	head = *table;
-	while ((*table) && (*table)->next)
-	{
-		pthread_mutex_init(&(*table)->mutex.r_fork, NULL);
-		(*table)->next->mutex.l_fork = (*table)->mutex.r_fork;
-		*table = (*table)->next;
-	}
-	if (head && (*table))
-		head->mutex.l_fork = (*table)->mutex.r_fork;
-	*table = head;
-}
-
 void	*thread_routine(void *args)
 {
 	t_table	*table;
@@ -368,12 +369,9 @@ void	*thread_routine(void *args)
 		the_last_supper = get_current_time();
 		pthread_mutex_unlock(&(table->mutex.l_fork));
 		pthread_mutex_unlock(&(table->mutex.r_fork));
-		// Check if philosopher died after eating
 		if (is_philo_pepsi(table, the_last_supper))
 			break ;
-		// Sleeping cycle
 		philo_sleep(table);
-		// Thinking cycle
 		philo_think(table);
 	}
 	return (NULL);
@@ -381,10 +379,12 @@ void	*thread_routine(void *args)
 
 pthread_t	*init_threads(t_table *table)
 {
+    t_table     *head;
 	pthread_t	*threads_id;
 	int			i;
 
 	i = 0;
+    head = table;
 	threads_id = (pthread_t *)malloc(sizeof(pthread_t)
 			* table->philosopher.routine.n_philos);
 	if (!threads_id | !table)
@@ -397,30 +397,22 @@ pthread_t	*init_threads(t_table *table)
 			table = table->next;
 			// printf("ID del hilo: %lu\n", (unsigned long)threads_id[i-1]);
 		}
-		// wait_for_threads();
+		usleep(500);
 	}
+    table = head;
 	return (threads_id);
 }
 
-actions.C
-
+actions.c
 #include "includes/philo.h"
-
-long	get_current_time(void)
-{
-	struct timeval	time;
-
-	gettimeofday(&time, NULL);
-	return (time.tv_sec * 1000) + (time.tv_usec / 1000);
-}
 
 void	philo_eat(t_table *table)
 {
 	long	start_time;
 
 	start_time = get_current_time();
-	printf("%ld %d has taken a fork\n", start_time, table->philosopher.id);
-	printf("%ld %d has taken a fork\n", start_time, table->philosopher.id);
+	printf("%ld %d has taken right fork\n", start_time, table->philosopher.id);
+	printf("%ld %d has taken left fork\n", start_time, table->philosopher.id);
 	printf("%ld %d is eating\n", start_time, table->philosopher.id);
 	usleep(table->philosopher.routine.time_to_eat * 1000);
 }
@@ -442,16 +434,46 @@ void	philo_think(t_table *table)
 	printf("%ld %d is thinking\n", start_time, table->philosopher.id);
 }
 
-int	is_philo_pepsi(t_table *table, long the_last_supper)
+int	is_philo_pepsi(t_table *table, long last_supper)
 {
 	long	current_time;
 
 	current_time = get_current_time();
-	if ((current_time
-			- the_last_supper) >= table->philosopher.routine.time_to_die)
+	if ((current_time - last_supper) >= table->philosopher.routine.time_to_die)
 	{
 		printf("%ld %d died\n", current_time, table->philosopher.id);
 		return (TRUE);
 	}
 	return (FALSE);
+}
+mutex.c
+
+#include "includes/philo.h"
+
+long	get_current_time(void)
+{
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return (time.tv_sec * 1000) + (time.tv_usec / 1000);
+}
+
+void	init_fork_mutex(t_table **table)
+{
+	t_table	*head;
+
+	head = *table;
+	while ((*table) && (*table)->next)
+	{
+		if (pthread_mutex_init(&(*table)->mutex.r_fork, NULL) != 0)
+        {
+            printf("Error Mutex INIT");
+            exit(EXIT_FAILURE);
+        }
+		(*table)->next->mutex.l_fork = (*table)->mutex.r_fork;
+		*table = (*table)->next;
+	}
+	if (head && (*table))
+		head->mutex.l_fork = (*table)->mutex.r_fork;
+	*table = head;
 }
