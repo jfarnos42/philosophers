@@ -6,29 +6,49 @@
 /*   By: jfarnos- <jfarnos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 14:19:58 by jfarnos-          #+#    #+#             */
-/*   Updated: 2024/10/26 18:49:17 by jfarnos-         ###   ########.fr       */
+/*   Updated: 2024/10/30 05:42:22 by jfarnos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/philo.h"
 
-void    philo_sleep(t_table *table)
+void	philo_eat(t_table *table)
 {
-    (void)table;
-    //table->philosopher.current_action = SLEEPING;
-    //usleep(table->philosopher.routine.time_to_sleep);
+	long	start_time;
+
+	start_time = get_current_time();
+	printf("%ld %d has taken right fork\n", start_time, table->philosopher.id);
+	printf("%ld %d has taken left fork\n", start_time, table->philosopher.id);
+	printf("%ld %d is eating\n", start_time, table->philosopher.id);
+	usleep(table->philosopher.routine.time_to_eat * 1000);
 }
 
-void    philo_eat(t_table *table)
+void	philo_sleep(t_table *table)
 {
-    (void)table;
-    //table->philosopher.current_action = EATING;
-    //usleep(table->philosopher.routine.time_to_eat);
+	long	start_time;
+
+	start_time = get_current_time();
+	printf("%ld %d is sleeping\n", start_time, table->philosopher.id);
+	usleep(table->philosopher.routine.time_to_sleep * 1000);
 }
 
-void    philo_think(t_table *table)
+void	philo_think(t_table *table)
 {
-    (void)table;
-    //table->philosopher.current_action = THINKING;
-    /*  DE MOMENTO NO HASE NA   */
+	long	start_time;
+
+	start_time = get_current_time();
+	printf("%ld %d is thinking\n", start_time, table->philosopher.id);
+}
+
+int	is_philo_pepsi(t_table *table, long last_supper)
+{
+	long	current_time;
+
+	current_time = get_current_time();
+	if ((current_time - last_supper) >= table->philosopher.routine.time_to_die)
+	{
+		printf("%ld %d died\n", current_time, table->philosopher.id);
+		return (TRUE);
+	}
+	return (FALSE);
 }

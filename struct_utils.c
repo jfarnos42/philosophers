@@ -6,20 +6,25 @@
 /*   By: jfarnos- <jfarnos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 23:03:11 by jfarnos-          #+#    #+#             */
-/*   Updated: 2024/10/26 18:54:00 by jfarnos-         ###   ########.fr       */
+/*   Updated: 2024/10/30 05:07:42 by jfarnos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/philo.h"
 
-void	philo_clear_table(t_table **table)
+void philo_free_table(t_table **table)
 {
-	t_table *trash;
-
-	trash = philo_lstlast(*table);
-	free()
-	
+    t_table *temp;
+    
+    while (*table)
+    {
+        temp = (*table)->next;
+        pthread_mutex_destroy(&(*table)->mutex.r_fork);
+        free(*table);
+        *table = temp;
+    }
 }
+
 
 t_table	*philo_lstnew(t_routine_data routine, int id)
 {
