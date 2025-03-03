@@ -6,7 +6,7 @@
 /*   By: jfarnos- <jfarnos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 14:19:58 by jfarnos-          #+#    #+#             */
-/*   Updated: 2024/10/30 07:39:53 by jfarnos-         ###   ########.fr       */
+/*   Updated: 2024/11/01 02:05:25 by jfarnos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,13 @@
 void	philo_eat(t_table *table)
 {
 	long	start_time;
+	
+	
+	pthread_mutex_lock(&(table->mutex.l_fork));
+	pthread_mutex_lock(&(table->mutex.r_fork));
+
 
 	start_time = get_current_time();
-	printf("%ld %d has taken right fork\n", start_time, table->philosopher.id);
-	printf("%ld %d has taken left fork\n", start_time, table->philosopher.id);
 	printf("%ld %d is eating\n", start_time, table->philosopher.id);
 	usleep(table->philosopher.routine.time_to_eat * 1000);
 }

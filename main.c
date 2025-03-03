@@ -6,7 +6,7 @@
 /*   By: jfarnos- <jfarnos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 18:40:38 by jfarnos-          #+#    #+#             */
-/*   Updated: 2024/10/30 07:18:38 by jfarnos-         ###   ########.fr       */
+/*   Updated: 2024/10/31 20:23:22 by jfarnos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int	main(int argc, char **argv)
 	t_routine_data	routine;
 	pthread_t		*threads_id;
 
+	table = NULL;
 	if (!parser(argc, argv))
 		return (FALSE);
 	routine = init_routine_data(argv);

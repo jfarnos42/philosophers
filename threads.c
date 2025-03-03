@@ -6,7 +6,7 @@
 /*   By: jfarnos- <jfarnos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 21:53:53 by jfarnos-          #+#    #+#             */
-/*   Updated: 2024/10/30 07:47:57 by jfarnos-         ###   ########.fr       */
+/*   Updated: 2024/11/01 02:03:31 by jfarnos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,6 @@ void	*thread_routine(void *args)
 	last_supper = get_current_time();
 	while (TRUE)
 	{
-        pthread_mutex_lock(&(table->mutex.l_fork));
-        pthread_mutex_lock(&(table->mutex.r_fork));
-
 		philo_eat(table);
 		last_supper = get_current_time();
 		pthread_mutex_unlock(&(table->mutex.l_fork));
